@@ -1,0 +1,30 @@
+{
+  "name": "Doodle-Jump-Javascript",
+  "version": "1.0.0",
+  "description": "Remake of the popular phone game Doodle Jump in Javascript",
+  "proivate": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "serve": "webpack serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mattyu1996/Doodle-Jump-Javascript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mattyu1996/Doodle-Jump-Javascript/issues"
+  },
+  "homepage": "https://github.com/Mattyu1996/Doodle-Jump-Javascript#readme",
+  "devDependencies": {
+    "webpack": "^5.44.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "dependencies": {
+    "webpack-dev-server": "^3.11.2"
+  }
+}
