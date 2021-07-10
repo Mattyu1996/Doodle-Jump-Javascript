@@ -1,4 +1,5 @@
 import Doodle from './assets/img/doodle.png';
+import Ui from './components/Ui';
 
 function component(){
     const element = document.createElement('div');
@@ -12,5 +13,9 @@ function Image(src = null){
     el.src = this.src;
     return el;
 }
-document.body.append(component());
-document.body.append(new Image(Doodle));
+
+//document.body.append(component());
+//document.body.append(new Image(Doodle));
+
+let ui = new Ui();
+ui.start();
