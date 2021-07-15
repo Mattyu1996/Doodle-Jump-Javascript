@@ -1,18 +1,16 @@
 import Phaser from 'phaser';
-import Background from '../assets/img/background.png';
-
+import GameScreen from './GameScreen';
+import StartScreen from './StartScreen';
+import FontManager from './FontManager';
+import AlSeana from '../assets/fonts/al-seana.ttf';
 function Game(width, height, parentId){
-    console.log(width, height)
+    console.log(width, height);
     this.config = {
-        type: Phaser.AUTO,
+        type: Phaser.CANVAS,
         parent: parentId,
         width: width,
         height: height,
-        scene: {
-            preload: preload,
-            create: create,
-            update: update
-        },
+        mode: Phaser.Scale.CENTER_BOTH,
         physics: {
             default: 'arcade',
             arcade: {
@@ -21,28 +19,17 @@ function Game(width, height, parentId){
             }
         },
     }
-    addCssStyle();
+    setStyle();
+    this.fontManager = new FontManager();
+    this.fontManager.addFont('alSeana', AlSeana);
     this.game = new Phaser.Game(this.config);
-    
+    //Aggiungo le due schermate
+    this.game.scene.add('startscreen', new StartScreen(), true);
+    this.game.scene.getScene('startscreen');
+    //this.game.scene.add('game', new GameScreen());
 
-    function preload ()
-    {
-        this.load.image('background', Background);
-    }
 
-    function create ()
-    {
-        this.background = this.add.image(0, 0, 'background').setOrigin(0,0);
-        this.background.displayWidth = this.sys.canvas.width;
-        this.background.displayHeight = this.sys.canvas.height;
-    }
-
-    function update ()
-    {
-        //...
-    }
-
-    function addCssStyle(){
+    function setStyle(){
         let style = document.createElement('style');
         style.innerText = `#${parentId} > *{width:100%;height:100%}`;
         document.head.append(style);
