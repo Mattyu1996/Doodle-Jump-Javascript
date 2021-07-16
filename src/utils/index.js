@@ -4,3 +4,15 @@ export function setStyle(element, objProps) {
         element.style[key] = objProps[key];
     });
 }
+
+export function delay(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+} 
+
+export function vWidth(percentuale){
+    return (percentuale/100)*this.sys.canvas.width;
+}
+
+export function vHeight(percentuale){
+    return (percentuale/100)*this.sys.canvas.height;
+}

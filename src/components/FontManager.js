@@ -3,8 +3,6 @@ function FontManager(){
     
     this.addFont = addFont;
 
-
-
     function addFont(name, path){
         let link = document.createElement('link');
         link.setAttribute('rel', 'preload');
