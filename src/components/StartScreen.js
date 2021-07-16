@@ -38,7 +38,10 @@ function StartScreen(){
         playButton.displayWidth = playButton.displayWidth*0.7;
         playButton.setImmovable(true);
         playButton.body.allowGravity = false;
-        console.log(playButton.body.immovable);
+        playButton.setInteractive();
+        playButton.on('pointerdown', (pointer)=>{
+            this.scene.start('game');
+        })
 
         this.ufo = this.add.sprite(vw(50), vh(40), 'ufo-light');
         this.ufo.displayHeight = vh(40);
