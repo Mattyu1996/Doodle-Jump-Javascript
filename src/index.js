@@ -1,4 +1,3 @@
-import Doodle from './assets/img/doodle.png';
 import Ui from './components/Ui';
 
 function component(){

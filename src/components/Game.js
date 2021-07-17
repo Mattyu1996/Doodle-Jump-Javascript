@@ -25,8 +25,8 @@ function Game(width, height, parentId){
     FontManager.addFont('alSeana', AlSeana);
     this.game = new Phaser.Game(this.config);
     //Aggiungo le due schermate
-    this.game.scene.add('startscreen', new StartScreen(), true);
-    this.game.scene.add('game', new GameScreen());
+    this.game.scene.add('startscreen', new StartScreen());
+    this.game.scene.add('game', new GameScreen(), true);
     
 
     function setStyle(){
