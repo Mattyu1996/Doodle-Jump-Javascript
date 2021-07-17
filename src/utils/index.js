@@ -16,3 +16,7 @@ export function vWidth(percentuale){
 export function vHeight(percentuale){
     return (percentuale/100)*this.sys.canvas.height;
 }
+
+export function getRandomInt(min,max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}

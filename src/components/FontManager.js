@@ -1,9 +1,6 @@
 
-function FontManager(){
-    
-    this.addFont = addFont;
-
-    function addFont(name, path){
+export default {
+    addFont(name, path){
         let link = document.createElement('link');
         link.setAttribute('rel', 'preload');
         link.setAttribute('as', 'font');
@@ -12,10 +9,10 @@ function FontManager(){
         link.setAttribute('crossorigin', '');
         document.head.append(link);
         document.styleSheets[0].addRule();
-        addCssFontRule(name, path)
-    }
+        this.addCssFontRule(name, path)
+    },
 
-    function addCssFontRule(name, path){
+    addCssFontRule(name, path){
         let sheet = document.styleSheets[0];
         sheet.insertRule(
             `@font-face{
@@ -26,4 +23,3 @@ function FontManager(){
     }
 }
 
-export default FontManager;

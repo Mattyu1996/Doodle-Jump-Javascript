@@ -39,14 +39,11 @@ function StartScreen(){
         playButton.setImmovable(true);
         playButton.body.allowGravity = false;
         playButton.setInteractive();
-        playButton.on('pointerdown', (pointer)=>{
-            this.scene.start('game');
-        })
 
         this.ufo = this.add.sprite(vw(50), vh(40), 'ufo-light');
         this.ufo.displayHeight = vh(40);
         this.ufo.displayWidth = vw(40);
-        ufoFlash();
+        let interval = ufoFlash();
 
         this.doodle = this.physics.add.sprite(vw(50), vh(50), 'doodle_jumping');
         this.doodle.displayHeight = vh(20);
@@ -55,15 +52,15 @@ function StartScreen(){
         this.doodle.setBounce(1);
         this.physics.add.collider(this.doodle, playButton, jump);
 
+        playButton.on('pointerdown', (pointer)=>{
+            this.scene.start('game');
+            clearInterval(interval);
+        });
         //this.add.text(100, 100, 'Doodle jump', {fontFamily: 'alSeana', fill: "green", fontSize: '500px'});
     }
 
-    screen.update = function(){
-        //...        
-    }
-
      var ufoFlash = (function(){
-        setInterval(async ()=>{
+        return setInterval(async ()=>{
                 this.ufo.setTexture('ufo');
                 await delay(80);
                 this.ufo.setTexture('ufo-light');
