@@ -43,6 +43,22 @@ function GameScreen(){
     }
 
     screen.update = function (){
+        //effetto Pacman
+        if(this.doodle.x <= 0){
+            console.log('pacman')
+            this.doodle.x = this.sys.canvas.width-(this.doodle.width/2);
+            console.log(this.doodle.x);
+        }
+        else if(this.doodle.x >= this.sys.canvas.width){
+            console.log('pacman')
+            this.doodle.x = 0+(this.doodle.width/2);
+            console.log(this.doodle.x);
+        }
+
+        if(this.doodle.y >= this.sys.canvas.height){
+            console.log('Hai Perso');
+        }
+
         if(this.keyboardArrows.right.isDown){
             right();
         }
@@ -77,6 +93,7 @@ function GameScreen(){
     }).bind(screen);
 
     var jump = (async function(){
+        //console.log(this.doodle)
         this.doodle.body.velocity.y = -4000;
         if(this.doodle.texture.key == 'doodle_rj'){
             this.doodle.setTexture('doodle_rs');
