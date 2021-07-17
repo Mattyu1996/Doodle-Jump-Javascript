@@ -6,7 +6,6 @@ import AlSeana from '../assets/fonts/al-seana.ttf';
 
 
 function Game(width, height, parentId){
-    console.log(width, height);
     this.config = {
         type: Phaser.CANVAS,
         parent: parentId,
