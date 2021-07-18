@@ -10,11 +10,11 @@ export function delay(ms){
 } 
 
 export function vWidth(percentuale){
-    return (percentuale/100)*this.sys.canvas.width;
+    return (percentuale/100)*this.scale.gameSize.width;
 }
 
 export function vHeight(percentuale){
-    return (percentuale/100)*this.sys.canvas.height;
+    return (percentuale/100)*this.scale.gameSize.height;
 }
 
 export function getRandomInt(min,max){

@@ -9,14 +9,17 @@ function Game(width, height, parentId){
     this.config = {
         type: Phaser.CANVAS,
         parent: parentId,
-        width: width,
-        height: height,
-        mode: Phaser.Scale.CENTER_BOTH,
+        scale: {
+            parent: parentId,
+            mode: Phaser.Scale.CENTER_BOTH,
+            width: 1000,
+            height: 1520,
+        },
         physics: {
             default: 'arcade',
             arcade: {
                 gravity: { y: 300 },
-                debug: false
+                debug: true
             }
         },
     }
