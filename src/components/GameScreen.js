@@ -5,7 +5,8 @@ import DoodleRJ from '../assets/img/doodle_rj.png';
 import DoodleRS from '../assets/img/doodle_rs.png';
 import DoodleLJ from '../assets/img/doodle_lj.png';
 import DoodleLS from '../assets/img/doodle_ls.png';
-import Spring from '../assets/img/spring_h.png';
+import SpringH from '../assets/img/spring_h.png';
+import SpringL from '../assets/img/spring_l.png';
 
 function GameScreen(){
     let screen = new Phaser.Scene('game');
@@ -19,21 +20,16 @@ function GameScreen(){
         this.load.image('doodle_rs', DoodleRS);
         this.load.image('doodle_lj', DoodleLJ);
         this.load.image('doodle_ls', DoodleLS);
-        this.load.image('spring', Spring);
+        this.load.image('springH', SpringH);
+        this.load.image('springL', SpringL);
     }
 
-    screen.create = function(){
-        console.log(this);
-        
+    screen.create = function(){        
         this.scale.scaleMode = 0;
         //Constants
         this.platformWidth = 0;
         this.keyboardArrows = this.input.keyboard.createCursorKeys();
         this.camera = this.cameras.cameras[0];
-        //this.physics.world.setBounds(0, 0, this.sys.canvas.width, this.sys.canvas.height);
-        console.log(this.physics.world.bodies.entries)
-        //this.physics.world.bodies.entries[0].Center.x = 505;
-        console.log(this.physics.world)
         this.background = this.add.sprite(0, 0, 'background').setOrigin(0,0);
         this.background.displayWidth = vw(100);
         this.background.displayHeight = vh(110);
@@ -55,13 +51,11 @@ function GameScreen(){
         this.scoreOffset = Math.abs(this.doodle.y-this.sys.canvas.height);
         this.camera.startFollow(this.doodle);
         this.camera.setLerp(0,1);
-        
-        this.physics.add.collider(this.platforms, this.shoes);
-        this.physics.add.overlap(this.doodle, this.shoes, collectShoes, null, this);
+        this.physics.add.collider(this.doodle, this.springs, collectSpring);
     }
 
     screen.update = function (){
-        console.log(this.score % 5000)
+        //console.log(this.camera.worldView.top)
         //movimenti
         if(this.keyboardArrows.right.isDown){
             right();
@@ -88,19 +82,22 @@ function GameScreen(){
         if(this.doodle.y >= this.sys.canvas.height){
             console.log('Hai Perso');
         }
-        
+        //Distruzione elementi
         for (let platform of this.platforms.children.entries) {
             if(platform.y >= (this.camera.worldView.y+this.sys.canvas.height+vh(2.5))){
                 this.platforms.remove(platform);
                 platform.destroy();
                 makePlatform(computeNewPlatformX(), getLastPlatform().y-vh(13));
-                console.log(this.score);
             }   
+        }
+        if(this.springs.children.entries[0] && this.springs.children.entries[0].y >= (this.camera.worldView.y+this.sys.canvas.height+vh(2.5))){
+            this.springs.children.entries[0].destroy();
         }
     }
 
     var makePlatforms = (function(){
         this.platforms = this.physics.add.staticGroup();
+        this.springs = this.physics.add.staticGroup();
         this.platforms.enableBody = true;
         this.platforms.createMultiple(10, 'platform');
         //creo la piattaforma dove partirà il doodle
@@ -125,13 +122,22 @@ function GameScreen(){
         platform.body.immovable = true;
         platform.body.allowGravity = false;
         this.platforms.add(platform);
-        if(/*this.score > 5000 && this.score%5000 < 1000 &&*/ (!this.shoes || !this.shoes.active)){
-            this.shoes = this.physics.add.sprite(platform.x - (platform.width/2)+vw(10), platform.y-platform.height+vh(2), 'spring');
-            this.shoes.scaleX = 0.3;
-            this.shoes.scaleY = 0.3;
-            this.shoes.setDepth(20);
+        //Dopo un punteggio di 7000 ogni 7000 punti creo una molla
+        if(this.score > 7000 && this.score%7000 < 1000 && this.springs.children.entries.length < 1){
+            makeSpring(platform.x, platform.y);
         }
         return platform;
+    }).bind(screen);
+
+    var makeSpring = (function (x,y){
+        let spring = this.springs.create(x-vw(6), y-vh(1.4), 'springL');
+        spring.scaleX = 0.3;
+        spring.scaleY = 0.3;
+        spring.enableBody = true;
+        spring.body.allowGravity = false;
+        spring.setOrigin(1.65,1.65);
+        spring.body.setSize(spring.displayWidth, spring.displayHeight, true)
+        this.springs.add(spring);
     }).bind(screen);
 
     var jump = (async function(){
@@ -165,8 +171,14 @@ function GameScreen(){
         this.doodle.body.velocity.x = -vw(45);
     }).bind(screen);
 
-    var collectShoes = (function(doodle, shoe){
-        shoe.disableBody(true,true);
+    var collectSpring = (async function(){
+        let spring = this.springs.children.entries[0];
+        spring.setTexture('springH');
+        this.doodle.body.velocity.y = -vh(150);
+        await delay(100);
+        spring.setTexture('springL');
+        await delay(100);
+        spring.destroy();
     }).bind(screen);
 
     var getLastPlatform = (function(){
