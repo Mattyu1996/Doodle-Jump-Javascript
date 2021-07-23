@@ -3,8 +3,6 @@ import Background from '../assets/img/background.png';
 import Platform from '../assets/img/platform.png';
 import DoodleRJ from '../assets/img/doodle_rj.png';
 import DoodleRS from '../assets/img/doodle_rs.png';
-import DoodleLJ from '../assets/img/doodle_lj.png';
-import DoodleLS from '../assets/img/doodle_ls.png';
 import SpringH from '../assets/img/spring_h.png';
 import SpringL from '../assets/img/spring_l.png';
 
@@ -18,8 +16,6 @@ function GameScreen(){
         this.load.image('platform', Platform);
         this.load.image('doodle_rj', DoodleRJ);
         this.load.image('doodle_rs', DoodleRS);
-        this.load.image('doodle_lj', DoodleLJ);
-        this.load.image('doodle_ls', DoodleLS);
         this.load.image('springH', SpringH);
         this.load.image('springL', SpringL);
     }
@@ -36,6 +32,9 @@ function GameScreen(){
         this.background.fixedToCamera = true;
         makePlatforms();
 
+        this.center = this.physics.add.sprite(this.camera.centerX, this.camera.centerY);
+        this.center.body.allowGravity = false;
+        
         this.doodle = this.physics.add.sprite(vw(50), vh(85), 'doodle_rj');
         this.doodle.scaleX = 0.7;
         this.doodle.scaleY = 0.7;
@@ -47,10 +46,11 @@ function GameScreen(){
         this.doodle.body.checkCollision.left = false;
         this.doodle.body.checkCollision.right = false;
         this.physics.add.collider(this.doodle, this.platforms, jump);
+        
         this.score = 0;
         this.scoreOffset = Math.abs(this.doodle.y-this.sys.canvas.height);
-        this.camera.startFollow(this.doodle);
-        this.camera.setLerp(0,1);
+        this.camera.startFollow(this.center);
+        this.camera.setLerp(0,0.03);
         this.physics.add.collider(this.doodle, this.springs, collectSpring);
     }
 
@@ -69,6 +69,9 @@ function GameScreen(){
         
         //muovo lo sfondo in concomitanza della camera
         this.background.y = this.camera.worldView.y-vh(5);
+        if(this.doodle.y < this.center.y){
+            this.center.y -= Math.abs(this.doodle.y-this.center.y)+vh(20);
+        }
 
         //effetto Pacman
         if(this.doodle.x <= 0){
@@ -156,17 +159,13 @@ function GameScreen(){
 
 
     var right = (function(){
-        if(this.doodle.texture.key != 'doodle_rj' || this.doodle.texture.key != 'doodle_rs') {
-            this.doodle.setTexture('doodle_rj');
-        }
+        this.doodle.flipX = false;
 
         this.doodle.body.velocity.x = vw(45);
     }).bind(screen);
 
     var left = (function(){
-        if(this.doodle.texture.key != 'doodle_lj' || this.doodle.texture.key != 'doodle_ls'){
-            this.doodle.setTexture('doodle_lj');
-        } 
+        this.doodle.flipX = true;
         
         this.doodle.body.velocity.x = -vw(45);
     }).bind(screen);
