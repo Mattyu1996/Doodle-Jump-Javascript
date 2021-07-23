@@ -6,6 +6,7 @@ import DoodleRJ from '../assets/img/doodle_rj.png';
 import DoodleRS from '../assets/img/doodle_rs.png';
 import SpringH from '../assets/img/spring_h.png';
 import SpringL from '../assets/img/spring_l.png';
+import Hole from '../assets/img/hole.png';
 
 function GameScreen(){
     let screen = new Phaser.Scene('game');
@@ -20,6 +21,7 @@ function GameScreen(){
         this.load.image('doodle_rs', DoodleRS);
         this.load.image('springH', SpringH);
         this.load.image('springL', SpringL);
+        this.load.image('hole', Hole);
     }
 
     screen.create = function(){        
@@ -53,11 +55,11 @@ function GameScreen(){
         this.scoreOffset = Math.abs(this.doodle.y-this.sys.canvas.height);
         this.camera.startFollow(this.center);
         this.camera.setLerp(0,0.03);
-        this.physics.add.collider(this.doodle, this.springs, collectSpring);
+        this.physics.add.overlap(this.doodle, this.springs, collectSpring, null, this);
+        this.physics.add.overlap(this.doodle, this.holes, blackHole, null, this);
     }
 
     screen.update = function (){
-        //console.log(this.camera.worldView.top)
         //movimenti
         if(this.keyboardArrows.right.isDown){
             right();
@@ -65,7 +67,6 @@ function GameScreen(){
         else if(this.keyboardArrows.left.isDown){
             left();
         }
-
         //calcolo dello score
         this.score = Math.floor(Math.max( this.score, (Math.abs(this.doodle.y-this.sys.canvas.height)-this.scoreOffset)));
         
@@ -87,7 +88,7 @@ function GameScreen(){
         if(this.doodle.y >= this.sys.canvas.height){
             console.log('Hai Perso');
         }
-        
+        //Gestione Piattaforme
         for (let platform of this.platforms.children.entries) {
             //movimento piattaforme blu
             if(platform.b) platform.body.velocity.x = (platform.right) ? vh(20) : -vh(20);
@@ -100,6 +101,7 @@ function GameScreen(){
                 makePlatform(computeNewPlatformX(), getLastPlatform().y-vh(13));
             }   
         }
+        //distruzione molle
         if(this.springs.children.entries[0] && this.springs.children.entries[0].y >= (this.camera.worldView.y+this.sys.canvas.height+vh(2.5))){
             this.springs.children.entries[0].destroy();
         }
@@ -111,6 +113,7 @@ function GameScreen(){
             allowGravity: false
         });
         this.springs = this.physics.add.staticGroup();
+        this.holes = this.physics.add.staticGroup();
         this.platforms.enableBody = true;
         this.platforms.createMultiple(10, 'platform');
         //creo la piattaforma dove partirà il doodle
@@ -150,7 +153,23 @@ function GameScreen(){
         if(this.score > 7000 && this.score%7000 < 1000 && this.springs.children.entries.length < 1){
             makeSpring(platform.x, platform.y);
         }
+        //Dopo un punteggio di 20000 ogni 10000 punti creo una molla
+        if(this.score > 20000 && this.score%10000 < 500 &&this.holes.children.entries.length < 1){
+            makeHole(computeNewPlatformX()+vw(20), getLastPlatform().y-200);
+        }
+
         return platform;
+    }).bind(screen);
+
+    var makeHole = (function(x,y){
+        let hole = this.holes.create(x,y, 'hole');
+        hole.scaleX = 2;
+        hole.scaleY = 2;
+        hole.enableBody = true;
+        hole.body.allowGravity = false;
+        hole.body.setSize(hole.displayWidth-50, hole.displayHeight);
+        hole.setOrigin(0.25,0.2);
+        this.holes.add(hole);
     }).bind(screen);
 
     var makeSpring = (function (x,y){
@@ -222,6 +241,10 @@ function GameScreen(){
         return x;
     }).bind(screen);
 
+
+    var blackHole = (function (){
+        console.log('Hai Perso');
+    }).bind(screen);
     return screen;
 }
 
