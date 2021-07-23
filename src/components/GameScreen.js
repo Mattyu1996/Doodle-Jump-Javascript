@@ -1,6 +1,7 @@
 import { delay, getRandomInt, vWidth, vHeight } from '../utils';
 import Background from '../assets/img/background.png';
 import Platform from '../assets/img/platform.png';
+import PlatformB from '../assets/img/platform-b.png';
 import DoodleRJ from '../assets/img/doodle_rj.png';
 import DoodleRS from '../assets/img/doodle_rs.png';
 import SpringH from '../assets/img/spring_h.png';
@@ -14,6 +15,7 @@ function GameScreen(){
     screen.preload = function (){
         this.load.image('background', Background);
         this.load.image('platform', Platform);
+        this.load.image('platform-b', PlatformB);
         this.load.image('doodle_rj', DoodleRJ);
         this.load.image('doodle_rs', DoodleRS);
         this.load.image('springH', SpringH);
@@ -85,8 +87,13 @@ function GameScreen(){
         if(this.doodle.y >= this.sys.canvas.height){
             console.log('Hai Perso');
         }
-        //Distruzione elementi
+        
         for (let platform of this.platforms.children.entries) {
+            //movimento piattaforme blu
+            if(platform.b) platform.body.velocity.x = (platform.right) ? vh(20) : -vh(20);
+            if(platform.b && platform.x >= this.physics.world.bounds.right) platform.right = false;
+            if(platform.b && platform.x <= this.physics.world.bounds.left+vw(25)) platform.right = true;
+            //Distruzione piattaforme
             if(platform.y >= (this.camera.worldView.y+this.sys.canvas.height+vh(2.5))){
                 this.platforms.remove(platform);
                 platform.destroy();
@@ -99,7 +106,10 @@ function GameScreen(){
     }
 
     var makePlatforms = (function(){
-        this.platforms = this.physics.add.staticGroup();
+        this.platforms = this.physics.add.group({
+            immovable: true,
+            allowGravity: false
+        });
         this.springs = this.physics.add.staticGroup();
         this.platforms.enableBody = true;
         this.platforms.createMultiple(10, 'platform');
@@ -114,17 +124,28 @@ function GameScreen(){
     }).bind(screen);
 
     var makePlatform = (function (x, y, width, height){
-        let platform = this.platforms.create(x,y, 'platform');
-        platform.setOrigin(1.25,1.25);
-        platform.scaleY = 0.4;
-        platform.scaleX = 0.4;
-        platform.enableBody = true;
-        //platform.body.collideWorldBounds = true;
-        platform.body.setSize(platform.displayWidth, platform.displayHeight, true);
-        //platform.body.offset.x = platform.displayWidth;
-        platform.body.immovable = true;
-        platform.body.allowGravity = false;
-        this.platforms.add(platform);
+        let platform;
+        if(this.score > 15000 && getRandomInt(1, 10) == 3){
+            console.log('dentro')
+            platform = this.platforms.create(x,y, 'platform-b');
+            platform.setOrigin(1.25,1.25);
+            platform.scaleY = 0.4;
+            platform.scaleX = 0.4;
+            platform.enableBody = true;
+            platform.body.velocity.x = vh(10);
+            platform.b = true;
+            console.log(platform)
+            this.platforms.add(platform);
+        }
+        else{
+            platform = this.platforms.create(x,y, 'platform');
+            platform.setOrigin(1.25,1.25);
+            platform.scaleY = 0.4;
+            platform.scaleX = 0.4;
+            platform.enableBody = true;
+            this.platforms.add(platform);
+        }
+
         //Dopo un punteggio di 7000 ogni 7000 punti creo una molla
         if(this.score > 7000 && this.score%7000 < 1000 && this.springs.children.entries.length < 1){
             makeSpring(platform.x, platform.y);
