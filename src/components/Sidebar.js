@@ -7,8 +7,10 @@ function Sidebar(){
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        backgroundImage: 'url('+Background+')'
+        backgroundImage: 'url('+Background+')',
+        overflowY: 'hidden'
     });
+
     return element;
 }
 

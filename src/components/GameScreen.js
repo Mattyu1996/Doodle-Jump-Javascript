@@ -1,4 +1,5 @@
-import { delay, getRandomInt, vWidth, vHeight } from '../utils';
+import { delay, getRandomInt, vWidth, vHeight } from '../utils'
+import Ui from './Ui';
 import Background from '../assets/img/background.png';
 import Platform from '../assets/img/platform.png';
 import PlatformB from '../assets/img/platform-b.png';
@@ -33,7 +34,6 @@ function GameScreen(){
         this.background = this.add.sprite(0, 0, 'background').setOrigin(0,0);
         this.background.displayWidth = vw(100);
         this.background.displayHeight = vh(110);
-        this.background.fixedToCamera = true;
         makePlatforms();
 
         this.center = this.physics.add.sprite(this.camera.centerX, this.camera.centerY);
@@ -69,6 +69,7 @@ function GameScreen(){
         }
         //calcolo dello score
         this.score = Math.floor(Math.max( this.score, (Math.abs(this.doodle.y-this.sys.canvas.height)-this.scoreOffset)));
+        updateScore(this.score);
         
         //muovo lo sfondo in concomitanza della camera
         this.background.y = this.camera.worldView.y-vh(5);
@@ -86,7 +87,7 @@ function GameScreen(){
 
         //check fine partita
         if(this.doodle.y >= this.sys.canvas.height){
-            console.log('Hai Perso');
+            gameOver();
         }
         //Gestione Piattaforme
         for (let platform of this.platforms.children.entries) {
@@ -132,7 +133,7 @@ function GameScreen(){
             console.log('dentro')
             platform = this.platforms.create(x,y, 'platform-b');
             platform.setOrigin(1.25,1.25);
-            platform.scaleY = 0.4;
+            platform.scaleY = 0.3;
             platform.scaleX = 0.4;
             platform.enableBody = true;
             platform.body.velocity.x = vh(10);
@@ -143,7 +144,7 @@ function GameScreen(){
         else{
             platform = this.platforms.create(x,y, 'platform');
             platform.setOrigin(1.25,1.25);
-            platform.scaleY = 0.4;
+            platform.scaleY = 0.3;
             platform.scaleX = 0.4;
             platform.enableBody = true;
             this.platforms.add(platform);
@@ -243,8 +244,20 @@ function GameScreen(){
 
 
     var blackHole = (function (){
-        console.log('Hai Perso');
+        gameOver();
     }).bind(screen);
+
+    var gameOver = (function(){
+        console.log('Hai Perso');
+        this.doodle.body.allowGravity = false;
+        this.scene.start('over');
+        this.game.newScore(this.score);
+    }).bind(screen);
+    
+    var updateScore = (function(score){
+        this.game.updateScore(score);
+    }).bind(screen);
+
     return screen;
 }
 

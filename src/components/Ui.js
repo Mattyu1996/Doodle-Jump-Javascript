@@ -1,5 +1,6 @@
 import { setStyle } from '../utils';
 import Sidebar from './Sidebar';
+import HighScoreManager from './HighScoreManager';
 import Game from './Game';
 import Icon from '../assets/img/favicon.png';
 
@@ -12,12 +13,7 @@ function Ui(){
         //Imposto lo stile del body
         setBodyStyle();
         //Creo la primaSidebar
-        const highscoreSidebar = new Sidebar();
-        highscoreSidebar.setAttribute('id','highscore-sidebar');
-        setStyle(highscoreSidebar, {
-            backgroundColor: 'red',
-            borderRight: '3px solid green'
-        })
+        const highscoreSidebar = new HighScoreManager();
         //Creo il contenitore del gioco
         const gameContainer = new Sidebar();
         setStyle(gameContainer, {
@@ -31,12 +27,13 @@ function Ui(){
             borderLeft: '3px solid green'
         })
         //appendo gli elementi al body
-        document.body.append(highscoreSidebar);
         document.body.append(gameContainer);
         document.body.append(istructions);
         //inizializzo il gioco
         let {width, height} = gameContainer.getBoundingClientRect(); 
-        new Game(width.toFixed(), height.toFixed(), 'game');
+        let game = new Game(width.toFixed(), height.toFixed(), 'game');
+        game.game.newScore = highscoreSidebar.newScore;
+        game.game.updateScore = highscoreSidebar.updateScore;
     }
 
     function setBodyStyle(){
@@ -55,6 +52,7 @@ function Ui(){
         favicon.setAttribute('href', Icon);
         document.head.append(favicon);
     }
+
 }
 
 export default Ui;

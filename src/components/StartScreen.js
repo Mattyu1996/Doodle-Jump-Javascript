@@ -26,7 +26,6 @@ function StartScreen(){
         this.background = this.add.image(0, 0, 'background').setOrigin(0,0);
         this.background.displayWidth = this.sys.canvas.width;
         this.background.displayHeight = this.sys.canvas.height;
-        
         let title = this.add.sprite(vw(50), vh(10), 'title');
         title.displayWidth = vw(70);
         title.displayHeight = vh(13);
@@ -43,7 +42,7 @@ function StartScreen(){
         this.ufo = this.add.sprite(vw(50), vh(40), 'ufo-light');
         this.ufo.displayHeight = vh(40);
         this.ufo.displayWidth = vw(40);
-        let interval = ufoFlash();
+        this.interval = ufoFlash();
 
         this.doodle = this.physics.add.sprite(vw(50), vh(50), 'doodle_jumping');
         this.doodle.displayHeight = vh(20);
@@ -52,11 +51,7 @@ function StartScreen(){
         this.doodle.setBounce(1);
         this.physics.add.collider(this.doodle, playButton, jump);
 
-        playButton.on('pointerdown', (pointer)=>{
-            this.scene.start('game');
-            clearInterval(interval);
-        });
-        //this.add.text(100, 100, 'Doodle jump', {fontFamily: 'alSeana', fill: "green", fontSize: '500px'});
+        playButton.on('pointerdown', play);
     }
 
      var ufoFlash = (function(){
@@ -81,7 +76,10 @@ function StartScreen(){
         this.doodle.setTexture('doodle_jumping');
     }).bind(screen);
     
-
+    var play = (function(pointer){
+        this.scene.start('game');
+        clearInterval(this.interval);
+    }).bind(screen);
     return screen;
 }
 
