@@ -20,3 +20,10 @@ export function vHeight(percentuale){
 export function getRandomInt(min,max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function setAttributes(element, obj){
+    const keys = Object.keys(obj);
+    keys.forEach(function(key) {
+        element.setAttribute(key, obj[key]);
+    });
+}

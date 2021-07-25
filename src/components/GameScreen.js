@@ -130,7 +130,6 @@ function GameScreen(){
     var makePlatform = (function (x, y, width, height){
         let platform;
         if(this.score > 15000 && getRandomInt(1, 10) == 3){
-            console.log('dentro')
             platform = this.platforms.create(x,y, 'platform-b');
             platform.setOrigin(1.25,1.25);
             platform.scaleY = 0.3;
@@ -138,7 +137,6 @@ function GameScreen(){
             platform.enableBody = true;
             platform.body.velocity.x = vh(10);
             platform.b = true;
-            console.log(platform)
             this.platforms.add(platform);
         }
         else{
@@ -152,7 +150,8 @@ function GameScreen(){
 
         //Dopo un punteggio di 7000 ogni 7000 punti creo una molla
         if(this.score > 7000 && this.score%7000 < 1000 && this.springs.children.entries.length < 1){
-            makeSpring(platform.x, platform.y);
+            let spring = makeSpring(platform.x, platform.y+vh(1));
+            if(platform.b) spring.body.velocity.x = platform.body.velocity.x; 
         }
         //Dopo un punteggio di 20000 ogni 10000 punti creo una molla
         if(this.score > 20000 && this.score%10000 < 500 &&this.holes.children.entries.length < 1){
@@ -182,6 +181,7 @@ function GameScreen(){
         spring.setOrigin(1.65,1.65);
         spring.body.setSize(spring.displayWidth, spring.displayHeight, true)
         this.springs.add(spring);
+        return spring;
     }).bind(screen);
 
     var jump = (async function(){
