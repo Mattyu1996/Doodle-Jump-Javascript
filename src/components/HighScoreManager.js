@@ -13,8 +13,6 @@ function HighScoreManager(){
         overflowY: 'auto'
     });
 
-    
-
     sidebar.append(makeCurrentScoreContainer.call(this));
 
     this.updateScore = (function(score){
@@ -22,7 +20,6 @@ function HighScoreManager(){
     }).bind(this); 
     
     this.newScore = (function (score){
-        console.log('dentro', score);
         let container = document.createElement('div');
         setStyle(container, {
             display: 'flex',
@@ -81,9 +78,7 @@ function HighScoreManager(){
     }
 
     function openForm(event){
-        console.log(event.target.tagName);
         if(event.target.tagName != 'INPUT'){
-            console.log('dentro')
             let el = (event.target.tagName == 'DIV') ? event.target : event.target.parentElement;
             let span = el.children[0];
             span.style.display = 'none';
@@ -124,9 +119,7 @@ function HighScoreManager(){
 
     function sortScores(){
         let [currentScoreEl, ...scoresEl] = sidebar.children;
-        console.log(scoresEl.map(e => e.innerHTML));
         let sorted = scoresEl.sort(scoreCompare);
-        console.log(sorted.map(e => e.innerHTML));
         if(scoresEl.length >= 2){
             for(let i = 0; i < scoresEl.length; i++){
                 sorted[i].parentNode.appendChild(sorted[i]);
@@ -138,6 +131,6 @@ function HighScoreManager(){
         return(Number(a.lastChild.innerText) > Number(b.lastChild.innerText)) ? -1 : (Number(a.lastChild.innerText) < Number(b.lastChild.innerText)) ? 1 : 0;
     }
 
-    document.body.append(sidebar)
+    document.body.append(sidebar);
 }
 export default HighScoreManager;
