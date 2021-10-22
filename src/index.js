@@ -13,8 +13,6 @@ function Image(src = null){
     return el;
 }
 
-//document.body.append(component());
-//document.body.append(new Image(Doodle));
 
 let ui = new Ui();
 ui.start();
