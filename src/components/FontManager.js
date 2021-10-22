@@ -8,7 +8,6 @@ export default {
         link.setAttribute('type','font/ttf');
         link.setAttribute('crossorigin', '');
         document.head.append(link);
-        document.styleSheets[0].addRule();
         this.addCssFontRule(name, path)
     },
 
